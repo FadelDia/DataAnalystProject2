@@ -1,0 +1,43 @@
+## exploration  des données 
+
+# Step 3: Identifions and gérons les valeurs manquantes 
+# verification des valeurs manquantes 
+
+import pandas as pd
+import numpy as np
+
+# Load the dataset
+df = pd.read_csv('Earthquake_data_dataset.csv', encoding='utf-8')
+
+# Check for missing values
+missing_values = df.isnull().sum()
+print('Missing values before cleaning:')
+print(missing_values)
+
+# Remove rows with missing values
+df_cleaned = df.dropna()
+
+# Check for missing values after cleaning
+missing_values_cleaned = df_cleaned.isnull().sum()
+print('Missing values after cleaning:')
+print(missing_values_cleaned)
+
+# Identify outliers in the 'magnitude' column using IQR
+Q1 = df_cleaned['magnitude'].quantile(0.25)
+Q3 = df_cleaned['magnitude'].quantile(0.75)
+IQR = Q3 - Q1
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+outliers = df_cleaned[(df_cleaned['magnitude'] < lower_bound) | (df_cleaned['magnitude'] > upper_bound)]['magnitude']
+print('Outliers in magnitude:')
+print(outliers)
+
+# Remove outliers
+df_final = df_cleaned[(df_cleaned['magnitude'] >= lower_bound) & (df_cleaned['magnitude'] <= upper_bound)]
+
+# Final check for outliers in the 'magnitude' column
+final_outliers = df_final[(df_final['magnitude'] < lower_bound) | (df_final['magnitude'] > upper_bound)]['magnitude']
+print('Outliers after cleaning:')
+print(final_outliers)
+# Step 6: Saving the cleaned data
+df.to_csv("cleaned_data.csv", index=False)
