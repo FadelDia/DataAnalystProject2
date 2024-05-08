@@ -1,0 +1,5 @@
+# VISUALISATION DU DATASET EN DETAIL 
+
+data.describe()8
+data.info()
+
